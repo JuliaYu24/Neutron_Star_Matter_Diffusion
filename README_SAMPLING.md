@@ -7,7 +7,7 @@ solves TOV — the other two are seconds of NumPy on cached arrays.
 
 | Script | Does | Draws / TOV? |
 |--------|------|--------------|
-| `run_sampling.py` | Draws \(N\) samples from the DDPM prior (χEFT + pQCD anchors inpainted), TOV-solves each, and applies the **summary-mode** NICER + GW + \(M_\mathrm{max}\) + pQCD reweighting. Writes a `.pt`. | yes |
+| `run_sampling.py` | Draws \(N\) samples from the DDPM prior (χEFT anchors inpainted), TOV-solves each, and applies the **summary-mode** NICER + GW + \(M_\mathrm{max}\) + pQCD reweighting. Writes a `.pt`. | yes |
 | `apply_kde_nicer.py` | Re-reweights a saved `.pt`, upgrading the NICER term to the **tier-2 KDE** likelihood (J0740 Salmi + J0437 Choudhury *or* Miller; J0030 stays summary). Reuses cached `M`/`R`/`Lambda` and the GW/\(M_\mathrm{max}\)/pQCD log-L. | no |
 | `apply_heavy_mass_constraint.py` | Multiplies the existing weights by a one-sided heavy-mass (\(M_\mathrm{TOV}\) floor) likelihood on the cached \(M_\mathrm{max}\) (default PSR J0952−0607, \(2.35\pm0.17\,M_\odot\)). | no |
 

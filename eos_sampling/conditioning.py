@@ -20,7 +20,7 @@ def build_conditioning(nB_grid, nB_known, cs2_known,
     Parameters
     ----------
     nB_grid    : (L,) full dimensionless nB/n0 grid from the checkpoint
-    nB_known   : (K,) known nB/n0 values (chi-EFT and pQCD anchor points)
+    nB_known   : (K,) known nB/n0 values (chi-EFT anchor points)
     cs2_known  : (K,) known c_s^2 central values in physical units
     norm_mean  : (L,) per-grid-point training mean
     norm_std   : (L,) per-grid-point training std

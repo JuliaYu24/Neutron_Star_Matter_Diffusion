@@ -11,7 +11,7 @@ Edit the configuration blocks below and run:
     python run_sampling.py
 
 Five blocks to edit:
-    1. KNOWN DATA POINTS   -- chi-EFT + pQCD anchors (inpainting).
+    1. KNOWN DATA POINTS   -- chi-EFT anchors (inpainting).
     2. ANCHOR UNCERTAINTY  -- either independent sigmas OR a full
                               covariance matrix.
     3. ASTRO CONFIG        -- NICER / GW / M_max data + TOV numerics

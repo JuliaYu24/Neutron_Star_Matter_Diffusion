@@ -8,7 +8,7 @@ pass (see eos_sampling.pqcd).
 
 Pipeline:
   load_model
-    -> build_conditioning (chi-EFT + pQCD anchors only; optional cs2_cov)
+    -> build_conditioning (chi-EFT anchors only; optional cs2_cov)
     -> sample_ddpm (replacement inpainting + anchor jitter)
     -> denormalize_and_summarize
     -> (optional) filter_causal

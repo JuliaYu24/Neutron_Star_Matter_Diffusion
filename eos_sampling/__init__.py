@@ -1,7 +1,7 @@
 """
 eos_sampling -- DDPM-based EOS sampler with importance reweighting.
 
-The pipeline runs a DDPM with chi-EFT and pQCD anchor points applied
+The pipeline runs a DDPM with chi-EFT anchor points applied
 as inpainting conditioning, then reweights the resulting prior samples
 against astrophysical data (NICER pulsar masses/radii, gravitational-
 wave tidal deformability, pulsar mass lower bound) and the

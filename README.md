@@ -70,6 +70,12 @@ python cs2_betaeq_anchors.py --outdir .     # writes the anchor / reference-poin
 python run_training.py                       # writes checkpoints/eos_ddpm_best.pt
 ```
 
+> You do not need to run this. The four trained models used in the paper are
+> already in `checkpoints/`: `eos_ddpm_best_base_line.pt` (baseline, $M_0$) and
+> `eos_ddpm_best_11.pt`, `eos_ddpm_best_12.pt`, `eos_ddpm_best_13.pt`
+> ($M_\mathrm{I}$–$M_\mathrm{III}$, baseline plus class 11, 12 and 13), each the
+> best-epoch snapshot. Train only if you want to rebuild them.
+
 **3. Sample and reweight** — [`README_SAMPLING.md`](README_SAMPLING.md)
 ```bash
 python run_sampling.py                        # sampling + stellar structure + reweighting  →  posterior .pt

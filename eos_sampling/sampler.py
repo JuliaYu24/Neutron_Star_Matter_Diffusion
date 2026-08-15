@@ -2,7 +2,7 @@
 Base DDPM reverse sampler with inpainting + replacement.
 
 Generates samples from the trained diffusion prior, with chi-EFT
-and pQCD anchor points enforced as inpainting conditioning.
+anchor points enforced as inpainting conditioning.
 Astrophysical conditioning is handled separately by the
 importance reweighter (see eos_sampling.reweighting).
 
@@ -23,7 +23,7 @@ def sample_ddpm(model, schedule, mask, x_cond,
                 device=None, seed=None, x0_clamp=5.0):
     """
     Generate `n_samples` EOS curves from the trained DDPM, conditioned
-    on chi-EFT and pQCD anchor points via inpainting replacement.
+    on chi-EFT anchor points via inpainting replacement.
 
     Parameters
     ----------
