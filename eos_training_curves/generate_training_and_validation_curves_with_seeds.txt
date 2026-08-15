@@ -1,0 +1,21 @@
+python generate_curves.py --cls 1 --n_samples 100000 --seed 1001 --outdir data_pt/train/c1 --pt_min_fraction 0.30 --pt_threshold 0.05
+python generate_curves.py --cls 2  --n_samples 100000 --seed 2001    --outdir data/train/c2
+python generate_curves.py --cls 3 --n_samples 100000 --seed 1001 --outdir data_pt/train/c3 --pt_min_fraction 0.30 --pt_threshold 0.05
+python generate_curves.py --cls 4  --n_samples 100000 --seed 4001    --outdir data/train/c4
+python generate_curves.py --cls 5  --n_samples 100000 --seed 5001    --outdir data/train/c5
+python generate_curves.py --cls 6  --n_samples 100000 --seed 6001    --outdir data/train/c6
+python generate_curves.py --cls 7  --n_samples 100000 --seed 7001    --outdir data/train/c7
+python generate_curves.py --cls 8  --n_samples 100000 --seed 8001    --outdir data/train/c8
+python generate_curves.py --cls 9  --n_samples 100000 --seed 9001    --outdir data/train/c9
+python generate_curves.py --cls 10 --n_samples 100000 --seed 10001   --outdir data/train/c10
+
+python generate_curves.py --cls 1 --n_samples 3000 --seed 501001 --outdir data_pt/val/c1 --pt_min_fraction 0.30 --pt_threshold 0.05
+python generate_curves.py --cls 2  --n_samples 3000   --seed 502001  --outdir data/val/c2
+python generate_curves.py --cls 3 --n_samples 3000 --seed 501001 --outdir data_pt/val/c3 --pt_min_fraction 0.30 --pt_threshold 0.05
+python generate_curves.py --cls 4  --n_samples 3000   --seed 504001  --outdir data/val/c4
+python generate_curves.py --cls 5  --n_samples 3000   --seed 505001  --outdir data/val/c5
+python generate_curves.py --cls 6  --n_samples 3000   --seed 506001  --outdir data/val/c6
+python generate_curves.py --cls 7  --n_samples 3000   --seed 507001  --outdir data/val/c7
+python generate_curves.py --cls 8  --n_samples 3000   --seed 508001  --outdir data/val/c8
+python generate_curves.py --cls 9  --n_samples 3000   --seed 509001  --outdir data/val/c9
+python generate_curves.py --cls 10 --n_samples 3000   --seed 510001  --outdir data/val/c10
