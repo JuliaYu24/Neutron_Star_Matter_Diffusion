@@ -109,4 +109,3 @@ If you use this code, please cite the paper:
 ## Contact
 
 Correspondence: J. Yu. Panteleeva — panteleevajuly@gmail.com
-```
