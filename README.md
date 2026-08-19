@@ -92,8 +92,16 @@ posterior `.pt`, and run it from top to bottom.
 
 If you use this code, please cite the paper:
 
-```
-
+```bibtex
+@article{Panteleeva:2026zxs,
+    author = "Panteleeva, Julia Yu. and Alharazin, Herzallah and Epelbaum, Evgeny",
+    title = "{Generative artificial intelligence for reconstructing neutron-star matter}",
+    eprint = "2608.17457",
+    archivePrefix = "arXiv",
+    primaryClass = "nucl-th",
+    month = "8",
+    year = "2026"
+}
 ```
 
 ---
