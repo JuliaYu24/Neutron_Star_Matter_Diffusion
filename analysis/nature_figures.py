@@ -60,96 +60,38 @@ def panel_label(ax, letter, *, x=0.03, y=0.97, fontsize=15, ha="left"):
 # Panel specs copied verbatim from plot_diagnostics_4panel so the
 # single-panel renderer draws exactly what it drew before.
 _SPEC_CS2 = ("$c_s^2$",
-             dict(ylim=(-0.02, 1.02), causal=True, conformal_at=1.0 / 3.0,
+             dict(ylim=(-0.01, 0.82), causal=True, conformal_at=1.0 / 3.0,
                   show_anchors=True, diag_key="cs2", key="cs2"))
 _SPEC_GAMMA = ("$\\gamma = \\mathrm{d}\\ln P / \\mathrm{d}\\ln\\varepsilon$",
                dict(ylim=(0, None), hline_at=1.0,
                     show_anchors=False, diag_key="gamma", key="gamma"))
+_SPEC_DELTA = ("$\\Delta = 1/3 - P/\\varepsilon$",
+               dict(ylim=None, hline_at=0.0,
+                    show_anchors=False, diag_key="Delta", key="Delta"))
 _SPEC_DC = ("$d_c = \\sqrt{\\Delta^2 + (\\Delta^\\prime)^2}$",
             dict(ylim=(0, None), hline_at=None,
                  show_anchors=False, diag_key="d_c", key="d_c"))
 
 
-def _draw_delta_mu_panel(ax, mu_grid_MeV,
-                         bands_this, bands_gp=None, bands_c4=None,
-                         mu_TOV_GeV=None, marczenko=(-0.01, 0.03),
-                         gp_label="Annala 2023 GP",
-                         c4_label="Annala 2023 C4",
-                         gp_color="darkorange", c4_color="purple",
-                         label_fontsize=11):
-    """Delta(mu_B) panel, replicating notebook section 15d step 5."""
-    mu_GeV = np.asarray(mu_grid_MeV, dtype=np.float64) / 1000.0
 
-    ax.fill_between(mu_GeV, bands_this[0], bands_this[2],
-                    color="steelblue", alpha=0.30,
-                    label="This work (68% CI)")
-    ax.plot(mu_GeV, bands_this[1], color="steelblue", lw=2,
-            label="This work median")
-
-    if bands_gp is not None:
-        ax.fill_between(mu_GeV, bands_gp[0], bands_gp[2],
-                        color=gp_color, alpha=0.18,
-                        label=f"{gp_label} (68% CI)")
-        ax.plot(mu_GeV, bands_gp[1], color=gp_color, lw=1.5, ls="--",
-                label=f"{gp_label} median")
-
-    if bands_c4 is not None:
-        ax.fill_between(mu_GeV, bands_c4[0], bands_c4[2],
-                        color=c4_color, alpha=0.18,
-                        label=f"{c4_label} (68% CI)")
-        ax.plot(mu_GeV, bands_c4[1], color=c4_color, lw=1.5, ls="--",
-                label=f"{c4_label} median")
-
-    ax.axhline(0.0, color="0.3", ls=":", lw=1.0,
-               label=r"Conformal limit ($\Delta = 0$)")
-
-    if mu_TOV_GeV is not None:
-        ax.axvline(mu_TOV_GeV, color="0.4", ls="-.", lw=1.0,
-                   label=(r"$\mu_\mathrm{TOV}$ (this work, median) = "
-                          f"{mu_TOV_GeV:.2f} GeV"))
-        if marczenko is not None:
-            ax.errorbar(mu_TOV_GeV, marczenko[0], yerr=marczenko[1],
-                        fmt="D", color="tab:green", ms=7,
-                        mec="black", mew=0.6, capsize=4,
-                        label=(r"Marczenko+23 PRC: "
-                               r"$\Delta_\mathrm{TOV} = -0.01 \pm 0.03$"))
-
-    ax.set_xlabel(r"$\mu_B$ [GeV]", fontsize=label_fontsize)
-    ax.set_ylabel(r"$\Delta = 1/3 - P/\varepsilon$", fontsize=label_fontsize)
-    ax.set_xlim(0.9, 2.7)
-    ax.set_ylim(-0.15, 0.40)
-    ax.grid(True, alpha=0.3)
-    return ax
-
-
-def figure_diagnostics_2x2(nB_grid, cs2_arr, gamma_arr, dc_arr, weights, *,
+def figure_diagnostics_2x2(nB_grid, cs2_arr, gamma_arr, Delta_arr, dc_arr, weights, *,
                            nB_known=None, cs2_known=None, cs2_err=None,
                            external_bands=None,
-                           mu_grid_MeV=None,
-                           delta_bands_this=None,
-                           delta_bands_gp=None,
-                           delta_bands_c4=None,
-                           mu_TOV_GeV=None,
-                           marczenko=(-0.01, 0.03),
                            q_low=0.16, q_high=0.84,
                            save_path=None,
                            figsize=(13.0, 8.5), dpi=300,
-                           label_fontsize=11, letter_fontsize=15):
+                           label_fontsize=15, letter_fontsize=15):
     """
     Combined 2x2 diagnostics figure (paper Fig. cs2_diagnostics):
 
         a  c_s^2(n_B)  with chi-EFT anchors        b  gamma(n_B)
-        c  Delta(mu_B) with Marczenko+23 diamond   d  d_c(n_B)
+        c  Delta(n_B)                              d  d_c(n_B)
 
     Panels a, b, d are drawn by the same _save_single_diagnostic_panel
     used for the previous standalone PNGs; panel c replicates section
-    15d of the notebook.  The single shared legend sits on panel c (as
-    in the previous eos_EFT_Delta_vs_mu.png).  Bold unbracketed letters
+    15d of the notebook. Bold unbracketed letters
     are placed inside each panel; the LaTeX side needs no subfigures.
 
-    delta_bands_* are the (q16, q50, q84) tuples computed in notebook
-    section 15d (bands_D_this, bands_D_gp, bands_D_c4) on mu_grid_MeV
-    (= mu_grid_common, in MeV).
     """
     nB = _to_np(nB_grid)
     w  = _to_np(weights).astype(np.float64)
@@ -172,19 +114,22 @@ def figure_diagnostics_2x2(nB_grid, cs2_arr, gamma_arr, dc_arr, weights, *,
         external_bands=external_bands, q_low=q_low, q_high=q_high,
         save_path=None, label_fontsize=label_fontsize,
         draw_legend=False, ax=axes[0, 1])
-
-    # c -- Delta(mu_B) + Marczenko, carrying the single shared legend
-    _draw_delta_mu_panel(axes[1, 0], mu_grid_MeV,
-                         delta_bands_this, delta_bands_gp, delta_bands_c4,
-                         mu_TOV_GeV=mu_TOV_GeV, marczenko=marczenko,
-                         label_fontsize=label_fontsize)
     if external_bands is not None:
         add_shared_diagnostics_legend(
-            axes[1, 0],
+            axes[0, 1],
             external_bands=external_bands,
             chi_eft_color="red",
-            marczenko_color="tab:green",
-            loc="upper right", ncol=1, fontsize=8)
+            include_mu_tov=False, include_marczenko=False,
+            loc="upper right", ncol=1, fontsize=8.5)
+
+    # c -- Delta(n_B) 
+    ylab, opts = _SPEC_DELTA
+    _save_single_diagnostic_panel(
+        nB, np.asarray(Delta_arr, dtype=np.float64), w, ylab, opts,
+        external_bands=external_bands, q_low=q_low, q_high=q_high,
+        save_path=None, label_fontsize=label_fontsize,
+        draw_legend=False, ax=axes[1, 0])
+
 
     # d -- d_c
     ylab, opts = _SPEC_DC
@@ -203,37 +148,60 @@ def figure_diagnostics_2x2(nB_grid, cs2_arr, gamma_arr, dc_arr, weights, *,
         print(f"  Nature 2x2 diagnostics figure saved to {save_path}")
     return fig, axes
 
-
 # ================================================================
 # Fig. comparison : 1 x 2  (a: M-R, b: P/P_free)
 # ================================================================
+def _shown(bands, support, support_min):
+    """Band values where at least support_min of the ensemble is defined.
+
+    `support` is the fraction of the ensemble weight defined at each point of
+    the band's abscissa; columns below the threshold are NaN-filled and drop
+    out of the figure.  Passing support=None leaves the band untouched.
+    """
+    bands = np.asarray(bands, dtype=np.float64)
+    if support is None:
+        return bands
+    keep = np.asarray(support, dtype=np.float64) >= support_min
+    return np.where(keep[None, :], bands, np.nan)
+
+
 def _draw_pfree_panel(ax, mu_grid_MeV,
                       bands_this, bands_gp=None, bands_c4=None,
+                      support_this=None, support_gp=None, support_c4=None,
+                      support_min=0.30,
                       annala_quoted=(0.37, 0.43), pqcd_anchor_GeV=2.6,
                       gp_label="Annala 2023 GP", c4_label="Annala 2023 C4",
                       gp_color="darkorange", c4_color="purple",
-                      label_fontsize=11, legend_fontsize=8):
-    """P/P_free(mu_B) panel, replicating notebook section 15c step 4."""
+                      label_fontsize=15, legend_fontsize=8.5):
+    """P/P_free(mu_B) panel, replicating notebook section 15c step 4.
+
+    Each ensemble is drawn over its own mu_B support: given a support curve,
+    the band is shown where at least `support_min` of that ensemble's weight
+    is defined at that mu_B.
+    """
     mu_GeV = np.asarray(mu_grid_MeV, dtype=np.float64) / 1000.0
 
-    ax.fill_between(mu_GeV, bands_this[0], bands_this[2],
+    b_this = _shown(bands_this, support_this, support_min)
+    ax.fill_between(mu_GeV, b_this[0], b_this[2],
                     color="steelblue", alpha=0.30,
                     label="This work (68% CI)")
-    ax.plot(mu_GeV, bands_this[1], color="steelblue", lw=2,
+    ax.plot(mu_GeV, b_this[1], color="steelblue", lw=2,
             label="This work median")
 
     if bands_gp is not None:
-        ax.fill_between(mu_GeV, bands_gp[0], bands_gp[2],
+        b_gp = _shown(bands_gp, support_gp, support_min)
+        ax.fill_between(mu_GeV, b_gp[0], b_gp[2],
                         color=gp_color, alpha=0.18,
                         label=f"{gp_label} (68% CI)")
-        ax.plot(mu_GeV, bands_gp[1], color=gp_color, lw=1.5, ls="--",
+        ax.plot(mu_GeV, b_gp[1], color=gp_color, lw=1.5, ls="--",
                 label=f"{gp_label} median")
 
     if bands_c4 is not None:
-        ax.fill_between(mu_GeV, bands_c4[0], bands_c4[2],
+        b_c4 = _shown(bands_c4, support_c4, support_min)
+        ax.fill_between(mu_GeV, b_c4[0], b_c4[2],
                         color=c4_color, alpha=0.18,
                         label=f"{c4_label} (68% CI)")
-        ax.plot(mu_GeV, bands_c4[1], color=c4_color, lw=1.5, ls="--",
+        ax.plot(mu_GeV, b_c4[1], color=c4_color, lw=1.5, ls="--",
                 label=f"{c4_label} median")
 
     if annala_quoted is not None:
@@ -249,8 +217,9 @@ def _draw_pfree_panel(ax, mu_grid_MeV,
 
     ax.set_xlabel(r"$\mu_B$ [GeV]", fontsize=label_fontsize)
     ax.set_ylabel(r"$P / P^\mathrm{free}$", fontsize=label_fontsize)
+    ax.tick_params(axis="both", labelsize=15)
     ax.set_xlim(0.9, 2.7)
-    ax.set_ylim(0.0, 1.0)
+    ax.set_ylim(0.0, 0.85)
     ax.grid(True, alpha=0.3)
     ax.legend(fontsize=legend_fontsize, loc="upper left", framealpha=0.95)
     return ax
@@ -259,7 +228,7 @@ def _draw_pfree_panel(ax, mu_grid_MeV,
 def figure_mr_pfree(M_arr, R_arr, weights, *,
                     observed_pulsars=None,
                     mr_external_bands=None,
-                    c4_mass_grid=None, c4_R_bands=None,
+                    c4_mass_grid=None, c4_R_bands=None, c4_R_support=None,
                     mtov_bound=1.908,
                     mtov_bound_label=(r"$M_\mathrm{TOV} \geq "
                                       r"1.908\,M_\odot$ (J1614-2230)"),
@@ -267,9 +236,14 @@ def figure_mr_pfree(M_arr, R_arr, weights, *,
                     pfree_bands_this=None,
                     pfree_bands_gp=None,
                     pfree_bands_c4=None,
+                    pfree_support_this=None,
+                    pfree_support_gp=None,
+                    pfree_support_c4=None,
+                    pfree_support_min=0.30,
                     annala_quoted=(0.37, 0.43), pqcd_anchor_GeV=2.6,
                     q_low=0.16, q_high=0.84,
-                    min_weight_frac=0.30, M_max_quantile=0.90,
+                    min_weight_frac=0.30,
+                    M_max_quantile=0.90,
                     save_path=None,
                     figsize=(14.0, 5.5), dpi=300,
                     letter_fontsize=15):
@@ -285,7 +259,14 @@ def figure_mr_pfree(M_arr, R_arr, weights, *,
     numbered-pulsar legend.  Panel b replicates section 15c.
 
     c4_R_bands       : (q16, q50, q84) of the C4 R(M) on c4_mass_grid.
+    c4_R_support     : per-mass fraction of the C4 ensemble reaching that
+        mass; the overlay is shown where that fraction is at least
+        min_weight_frac, the same threshold plot_M_R_band applies to the
+        posterior band.
     pfree_bands_*    : (q16, q50, q84) tuples on mu_grid_MeV.
+    pfree_support_*  : per-column fraction of each ensemble's weight defined
+        on mu_grid_MeV; the band is shown where that fraction is at least
+        pfree_support_min.
     """
     fig, (ax_mr, ax_mu) = plt.subplots(1, 2, figsize=figsize)
 
@@ -300,10 +281,11 @@ def figure_mr_pfree(M_arr, R_arr, weights, *,
                   ax=ax_mr)
 
     if c4_mass_grid is not None and c4_R_bands is not None:
-        ax_mr.fill_betweenx(c4_mass_grid, c4_R_bands[0], c4_R_bands[2],
+        c4b = _shown(c4_R_bands, c4_R_support, min_weight_frac)
+        ax_mr.fill_betweenx(c4_mass_grid, c4b[0], c4b[2],
                             color="purple", alpha=0.18,
                             label="Annala 2023 (C4) 68% CI", zorder=2)
-        ax_mr.plot(c4_R_bands[1], c4_mass_grid,
+        ax_mr.plot(c4b[1], c4_mass_grid,
                    color="purple", lw=1.5, ls="--",
                    label="Annala 2023 (C4) median", zorder=3)
 
@@ -320,13 +302,17 @@ def figure_mr_pfree(M_arr, R_arr, weights, *,
         leg.remove()
     ax_mr.legend(handles, labels,
                  handler_map=handler_map,
-                 loc="upper left", fontsize=7, framealpha=0.95,
+                 loc="upper left", fontsize=8.5, framealpha=0.95,
                  labelspacing=0.6, handlelength=1.6,
                  handletextpad=0.5, borderpad=0.3, borderaxespad=0.3)
 
     # ---- b: P/P_free ------------------------------------------------
     _draw_pfree_panel(ax_mu, mu_grid_MeV,
                       pfree_bands_this, pfree_bands_gp, pfree_bands_c4,
+                      support_this=pfree_support_this,
+                      support_gp=pfree_support_gp,
+                      support_c4=pfree_support_c4,
+                      support_min=pfree_support_min,
                       annala_quoted=annala_quoted,
                       pqcd_anchor_GeV=pqcd_anchor_GeV)
 
@@ -338,8 +324,7 @@ def figure_mr_pfree(M_arr, R_arr, weights, *,
         fig.savefig(save_path, dpi=dpi, bbox_inches="tight")
         print(f"  Nature M-R + P/P_free figure saved to {save_path}")
     return fig, (ax_mr, ax_mu)
-
-
+    
 # ================================================================
 # Fig. fiducials_forest : 2 x 3 grid, letters a-f
 # ================================================================
