@@ -1,0 +1,9 @@
+numpy==2.4.6
+scipy==1.17.1
+matplotlib==3.10.8
+torch==2.6.0
+joblib==1.5.3
+pandas==3.0.1
+jupyter>=1.0
+ipython>=8.0
+

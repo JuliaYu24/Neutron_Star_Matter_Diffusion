@@ -23,6 +23,43 @@ The complete training and validation data (classes 1–13), all trained models w
 
 ---
 
+## System requirements
+
+- **OS**: tested on Linux (HPC; training and sampling) and macOS (Apple Silicon; analysis). Any OS with a standard Python ≥ 3.12 installation should work.
+- **Python**: 3.12 (tested with 3.12.12).
+- **Dependencies**: pinned in [`requirements.txt`](requirements.txt) — `numpy` 2.4.6, `scipy` 1.17.1, `matplotlib` 3.10.8, `torch` 2.6.0 (CUDA 12.4 build on the cluster), `joblib` 1.5.3, `pandas` 3.0.1, `jupyter`/`ipython` (analysis notebook only).
+- **Hardware**: no non-standard hardware is required for the demo or the analysis — a normal desktop/laptop is sufficient. *Training* the diffusion prior and the full production runs were performed on one NVIDIA A100 GPU (SLURM job with 1 GPU, 8 CPU cores): ≈ 12 h per trained model, and ≈ 15 h per 100 000-sample production run (sampling + stellar-structure solving + reweighting). The code falls back to CPU automatically (`torch.cuda.is_available()`), just slower. Since all trained models and posteriors are provided (see Data availability), a GPU is only needed to redo these stages from scratch.
+
+---
+
+## Installation
+
+```bash
+git clone https://github.com/JuliaYu24/Neutron_Star_Matter_Diffusion.git
+cd Neutron_Star_Matter_Diffusion
+pip install -r requirements.txt
+```
+
+Typical install time on a normal desktop computer: **a few minutes** (dominated by the PyTorch download). No compilation and no further setup are required; external data inputs are described in [`README_EXTERNAL_DATA.md`](README_EXTERNAL_DATA.md).
+
+---
+
+## Demo — reproduce the paper's results (no GPU, no retraining)
+
+The published posterior samples on Zenodo make the full analysis reproducible on a normal desktop computer without rerunning the expensive stages:
+
+1. Download `posteriors.zip` from [doi:10.5281/zenodo.22982277](https://doi.org/10.5281/zenodo.22982277) and unpack it.
+2. Open `analysis/notebook_diagnostics_kde.ipynb` and set `OUTPUT_PATH` to the path of the posterior you are interested in.
+3. Run the notebook top to bottom.
+
+**Expected output**: all numbers and figures of the paper, displayed in the notebook.
+
+**Expected runtime**: ≈ 20 minutes per posterior on a normal desktop computer (tested on an Apple-Silicon MacBook; no GPU required).
+
+To instead re-generate a posterior from the shipped trained model, run `run_sampling.py` (reduce `n_samples` in its config block from 100 000 for a quick check); the full pipeline from scratch is described under "Running the full pipeline" below.
+
+---
+
 ## Guides for each part
 
 This file is the overview. Each part of the project has its own guide:
