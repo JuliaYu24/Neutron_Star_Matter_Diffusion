@@ -1,5 +1,7 @@
 # Generative artificial intelligence for reconstructing neutron-star matter
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22982277.svg)](https://doi.org/10.5281/zenodo.22982277)
+
 Code for the paper *Generative artificial intelligence for reconstructing
 neutron-star matter* (J. Yu. Panteleeva, H. Alharazin, E. Epelbaum,
 Ruhr-Universität Bochum).
@@ -12,6 +14,12 @@ astrophysical measurements are applied afterwards by reweighting the drawn
 samples. Because the network is the only trained part, the prior and the data
 stay separate, and new measurements update the result by reweighting alone, with
 no retraining.
+
+---
+
+## Data availability
+
+The complete training and validation data (classes 1–13), all trained models with training logs, and the posterior samples from the paper are archived on Zenodo: [doi:10.5281/zenodo.22982277](https://doi.org/10.5281/zenodo.22982277) (CC-BY 4.0). Everything in the pipeline below can be reproduced from scratch, or downloaded there instead.
 
 ---
 
